@@ -1,6 +1,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <windows.h>
 #include <pthread.h>
 using namespace std;
 class Evento{
@@ -21,5 +22,5 @@ public:
 	static list<int> sinais;
 	static map<int,Evento*> eventos;
 	void EnviarSinal(int id);
-	void addEvent(Evento* ev);
+	static void addEvent(Evento* ev);
 };

@@ -25,7 +25,7 @@ void* Eventos::EXEvents(void *arg){
 	while(true){
 		lim:
 		if(!This->preparado){
-			_sleep(100);
+			Sleep(100);
 			goto lim;
 		}
 		if((!(Eventos::sinais.size()))){

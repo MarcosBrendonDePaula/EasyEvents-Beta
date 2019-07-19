@@ -1,26 +1,27 @@
 #include <iostream>
-#include <list>
-#include <map>
-#include <windows.h>
 #include <pthread.h>
-using namespace std;
-class Evento{
+#include <map>
+#include <list>
+#include <unistd.h>
+#include <stdio.h>
+class Event{
 public:
-	Evento(int id,void(*funcao)());
-	void(*funcao)();
-	int Id;
+    Event(int ID,void(*funcao)(void*),void *parametro);
+    int ID;
+    void *parametros;
+    void(*funcao)(void*);
 };
-
-class Eventos{
-private:
-	pthread_t EventProcess;
-	int preparado;
+class Events{
 public:
-	Eventos();
-	static void *EXEvents(void *arg);
-	static int started;
-	static list<int> sinais;
-	static map<int,Evento*> eventos;
-	void EnviarSinal(int id);
-	static void addEvent(Evento* ev);
+    static void* ExecutorF(void* arg);
+    static Events *static_Acess;
+    Events();
+    void addEvent(Event *E);
+    void sendSignal(int ID);
+private:
+    bool Debug;
+    pthread_t executor;
+    std::list<int> LEDP;
+    std::map<int,Event*> Leventos;
+    bool rodando;
 };

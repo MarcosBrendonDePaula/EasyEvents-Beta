@@ -1,44 +1,53 @@
 #include "Events.h"
+Events* Events::static_Acess;
 
-int Eventos::started;
-list<int> Eventos::sinais;
-map<int,Evento*> Eventos::eventos;
+/*
+    Construtor Eventos
+*/
+Events::Events(){
+    //this->Debug=Debug;
+    this->rodando=0;
+    Events::static_Acess=this;
+    pthread_create(&this->executor,0,Events::ExecutorF,this);
 
-Eventos::Eventos(){
-	this->preparado=0;
-	pthread_create(&this->EventProcess,NULL,Eventos::EXEvents,this);
-	//pthread_join(this->EventProcess,NULL);
 }
 
-void Eventos::EnviarSinal(int id){
-	Eventos::sinais.push_back(id);
-	if(!(Eventos::started)){
-		this->preparado=1;
-	}
+void Events::addEvent(Event *E){
+    this->Leventos[E->ID]=E;
 }
 
-void Eventos::addEvent(Evento* ev){
-	Eventos::eventos[ev->Id]=ev;
+void Events::sendSignal(int ID){
+    if(this->Leventos[ID]==NULL){
+        return;
+    }
+    this->LEDP.push_back(ID);
+    this->rodando=true;
+    
 }
-void* Eventos::EXEvents(void *arg){
-	Eventos* This=(Eventos*)arg;
-	while(true){
+
+void* Events::ExecutorF(void* arg){
+    Events *This=(Events*)arg;
+    	while(true){
 		lim:
-		if(!This->preparado){
-			Sleep(100);
+		if(!This->rodando){
+            sleep(1);
 			goto lim;
 		}
-		if((!(Eventos::sinais.size()))){
-			Eventos::started=false;
-			This->preparado=0;
+		if(This->LEDP.empty()){
+			This->rodando=false;
 			goto lim;
 		}
-		Eventos::started=true;
-		Eventos::eventos[Eventos::sinais.front()]->funcao();
-		Eventos::sinais.pop_front();
+		This->rodando=true;
+		This->Leventos[This->LEDP.front()]->funcao(This->Leventos[This->LEDP.front()]->parametros);
+		This->LEDP.pop_front();
 	}
 }
-Evento::Evento(int id,void(*funcao)()){
-	this->funcao=funcao;
-	this->Id=id;
+
+/*
+    Construtor Evento
+*/
+Event::Event(int ID,void(*funcao)(void*),void *parametro){
+    this->funcao=funcao;
+    this->ID=ID;
+    this->parametros=parametro;
 }

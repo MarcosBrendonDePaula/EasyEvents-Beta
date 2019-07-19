@@ -1,28 +1,23 @@
 #include <iostream>
 #include "Events.h"
-using namespace std;
-void teste(){
-	cout<<"rodo"<<endl;
-}
-void teste1(){
-	cout<<"rodo1"<<endl;
-}
-void Diego(){
-	cout<<"Diego Não"<<endl;
+void fun(void* arg){
+    int *x=(int*)arg;
+    int y=*x;
+    y++;
+    *x=y;
+    std::cout<<"Executou "<<*(x)<<std::endl;
 }
 int main(){
-	Eventos ev;
-	ev.addEvent(new Evento(0,&teste));
-	ev.addEvent(new Evento(1,&teste1));
-	ev.addEvent(new Evento(2,&Diego));
-	//_sleep(1000);
-	int x;
-	ev.EnviarSinal(1);
-	ev.EnviarSinal(0);
-	
-	while(true){
-		cin>>x;
-		ev.EnviarSinal(x);
-	}
-	return 0;
+    Events s;
+    int val=0;
+    int v2=7;
+    s.addEvent(new Event(0,&fun,&val));
+    s.addEvent(new Event(1,&fun,&v2));
+    s.sendSignal(0);
+    s.sendSignal(0);
+    Events::static_Acess->sendSignal(0);
+    Events::static_Acess->sendSignal(1);
+    int x;
+    std::cin >> x;
+    return 0;
 }

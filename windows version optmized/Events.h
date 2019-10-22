@@ -24,10 +24,11 @@ public:
     bool KeySMonitor=false;
     void addEvent(Event *E);
     void sendSignal(int ID);
+    void sendSignal(int ID,void* dado);
 	Event* getEvent(int id);
 private:
     bool Debug;
-    std::list<int> LEDP;
+    std::list<Event> LEDP;
     std::map<int,Event*> Leventos;
     bool rodando;
 };

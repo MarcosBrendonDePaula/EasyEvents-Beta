@@ -20,9 +20,18 @@ void Events::sendSignal(int ID){
     if(this->Leventos[ID]==NULL){
         return;
     }
-    this->LEDP.push_back(ID);
+    this->LEDP.push_back(*this->Leventos[ID]);
     this->rodando=true;
     
+}
+void Events::sendSignal(int ID,void *dado){
+    if(this->Leventos[ID]==NULL){
+        return;
+    }
+    Event x=*this->Leventos[ID];
+    x.parametros = dado;
+    this->LEDP.push_back(x);
+    this->rodando=true;
 }
 
 void Events::ExecutorF(void* arg){
@@ -38,7 +47,8 @@ void Events::ExecutorF(void* arg){
 			goto lim;
 		}
 		This->rodando=true;
-		This->Leventos[This->LEDP.front()]->funcao(This->Leventos[This->LEDP.front()]->parametros);
+        This->LEDP.front().funcao(This->LEDP.front().parametros);
+		//This->Leventos[This->LEDP.front().]->funcao(This->Leventos[This->LEDP.front()]->parametros);
 		This->LEDP.pop_front();
 	}
 }
@@ -46,13 +56,13 @@ void Events::ExecutorF(void* arg){
 void Events::KeyMonitor(void* arg){
     Events *This=(Events*)arg;
     while (true) {						
-		Sleep(100);
+		Sleep(50);
 		for (int i = 8; i <= 255; i++) {
 			if (GetAsyncKeyState(i) == -32767) {
                 int *x = (int*)malloc(sizeof(int));
                 *x = i; 
-                This->getEvent(159753)->parametros = x;
-                This->sendSignal(159753);
+                This->sendSignal(159753,x);
+                break;
             }					
 		}
     }

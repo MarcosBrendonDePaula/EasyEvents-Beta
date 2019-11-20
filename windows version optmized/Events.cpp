@@ -7,6 +7,7 @@ Events* Events::static_Acess;
 Events::Events(){
     //this->Debug=Debug;
     this->rodando=0;
+    this->Paralel=false;
     Events::static_Acess=this;
     _beginthread(Events::ExecutorF,0,this);
 
@@ -27,19 +28,22 @@ void Events::sendSignal(int ID){
 
 void Events::ExecutorF(void* arg){
     Events *This=(Events*)arg;
-    	while(true){
-		lim:
-		if(!This->rodando){
+    while(true){
+        lim:
+        while(!This->rodando){
             Sleep(500);
-			goto lim;
-		}
+        }
 		if(This->LEDP.empty()){
 			This->rodando=false;
 			goto lim;
 		}
 		This->rodando=true;
-		This->Leventos[This->LEDP.front()]->funcao(This->Leventos[This->LEDP.front()]->parametros);
-		This->LEDP.pop_front();
+        //single process
+		if(!This->Paralel)
+            This->Leventos[This->LEDP.front()]->funcao(This->Leventos[This->LEDP.front()]->parametros);
+		else
+            _beginthread(This->Leventos[This->LEDP.front()]->funcao,0,This->Leventos[This->LEDP.front()]->parametros);
+        This->LEDP.pop_front();
 	}
 }
 

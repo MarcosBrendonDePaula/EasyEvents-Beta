@@ -24,6 +24,7 @@ public:
     bool KeySMonitor=false;
     void addEvent(Event *E);
     void sendSignal(int ID);
+    bool Paralel;
 	Event* getEvent(int id);
 private:
     bool Debug;

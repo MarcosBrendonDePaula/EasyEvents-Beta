@@ -7,6 +7,7 @@ ________________________________________________________________________________
 ##### Compilador com Threads Basado em Posix
 ###### SO: Linux|Windows
 
-Compiling the example: g++ Events.cpp exemplo.cpp -o main -pthread
+Compiling the example: (g++ Events.cpp exemplo.cpp -o main -pthread) -> LINUX
+Compiling the example: (g++ Events.cpp exemplo.cpp -o main) -> Windows
 
 
